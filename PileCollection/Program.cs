@@ -15,7 +15,15 @@ namespace PileCollection
 
         static void Main(string[] args)
         {
-            TestEmpilerDepiler(5);
+            try
+            {
+                TestConversion();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
 
             Console.WriteLine("Programme terminé, appuyer sur une touche pour continuer.");
             Console.ReadKey();
@@ -110,6 +118,61 @@ namespace PileCollection
             }
         }
            
+        /// <summary>
+        /// Convertit un nombre de base 10 en n'importe quelle base
+        /// comprise entre 2 et 16.
+        /// </summary>
+        /// <param name="nbElements">Nombre d'éléments de la Pile.</param>
+        /// <param name="nbConvert">Nombre à convertir</param>
+        /// <param name="newBase">Nouvelle base du nombre</param>
+        /// <returns></returns>
+        static string Convertir(int nbElements, int nbConvert, Int32 newBase)
+        {
+            try
+            {
+                Pile maPile = new Pile();
+                string result = "";
+                int premierNombre = nbConvert;
+                InitPile(ref maPile, nbElements);
+                while (nbConvert != 0 && !(EstPleine(maPile)))
+                {
+                    Empiler(ref maPile, nbConvert % newBase);
+                    nbConvert /= newBase;
+                }
+
+                if (nbConvert != 0)
+                {
+                    return "La pile est trop petite.";
+                }
+                else
+                {
+                    while (!EstVide(maPile))
+                    {
+                        int nb = (int)Depiler(ref maPile);
+                        if (nb < 10)
+                        {
+                            result += Convert.ToString(nb);
+                        }
+                        else
+                        {
+                            result += nb.ToString("X");
+                        }
+                    }
+                    return $"La valeur de {premierNombre} en base 10 est de {result} en base {newBase}";
+                }
+            }
+            catch (DivideByZeroException ex)
+            {
+                throw new DivideByZeroException("Impossible de convertir en base 0.");
+            }
+            
+            
+        }
+
+
+
+
+        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
         static void TestPileVidePilePleine(int nbElements)
@@ -165,6 +228,25 @@ namespace PileCollection
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Test de la méthode Conversion(...)
+        /// Cette méthode permet la saisie des valeurs utiles à la conversion :
+        /// nombre d'éléments de la collection,
+        /// nombre à convertir,
+        /// nouvelle base.
+        /// </summary>
+        static void TestConversion()
+        {
+            Console.WriteLine("Nombre d'éléments de la Pile :");
+            int nbElem = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Nombre à convertir :");
+            int nbConvert = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Nouvelle base :");
+            int newBase = Convert.ToInt32(Console.ReadLine());
+            string convertion = Convertir(nbElem, nbConvert, newBase);
+            Console.WriteLine(convertion);
         }
 
 

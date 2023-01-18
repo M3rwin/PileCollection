@@ -5,4 +5,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\ramer\source\repos\PileCollection\PileCollection\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\ramer\source\repos\PileCollection\PileCollection\.editorconfig" />
+  </ItemGroup>
+
 </Project>
