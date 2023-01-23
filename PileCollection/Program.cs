@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace PileCollection
 {
@@ -17,7 +19,8 @@ namespace PileCollection
         {
             try
             {
-                TestConversion();
+                // TestConversion();
+                Console.WriteLine(RecupereLoremIpsum(3));
             }
             catch(Exception ex)
             {
@@ -170,9 +173,57 @@ namespace PileCollection
         }
 
 
+        static String RecupereLoremIpsum(int nbParagraphes) {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/text"));
+            String url = $"https://loripsum.net/api/{nbParagraphes}/short/plaintext";
+            var response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode) 
+            { 
+                string responseBody = response.Content.ReadAsStringAsync().Result;
+                return responseBody;
+            } 
+            else 
+            { 
+                throw new Exception($"Erreur API : {response.StatusCode} {response.ReasonPhrase}"); 
+            } 
+        }
+
+        static string InversePhrase(String phrase)
+        {
+            Pile maPile = new Pile();
+            InitPile(ref maPile, 200);
+            var tab = phrase.Split(" ");
+            foreach (string mot in tab)
+            {
+                Empiler(ref maPile, mot);
+            }
+            String message = "";
+            while (!EstVide(maPile))
+            {
+                message += " " + Depiler(ref maPile);
+            }
+            return message;
+        }
 
 
         /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        static void TestInversePhrase()
+        {
+            try
+            {
+                String phrase = RecupereLoremIpsum(3);
+                Console.WriteLine(phrase);
+                String phraseInversee = InversePhrase(phrase);
+                Console.WriteLine(phraseInversee);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
 
         static void TestPileVidePilePleine(int nbElements)
